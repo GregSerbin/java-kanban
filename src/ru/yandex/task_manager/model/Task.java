@@ -1,3 +1,5 @@
+package ru.yandex.task_manager.model;
+
 import java.util.Objects;
 
 public class Task {
@@ -6,17 +8,17 @@ public class Task {
     protected TaskStatus status;
     protected int id;
 
-    public Task(String subject, String description, TaskStatus status, int id) {
+    public Task(String subject, String description, TaskStatus status, int taskId) {
         this.subject = subject;
         this.description = description;
         this.status = status;
-        this.id = id;
+        this.id = taskId;
     }
 
-    public Task(String subject, String description, int id) {
+    public Task(String subject, String description, int taskId) {
         this.subject = subject;
         this.description = description;
-        this.id = id;
+        this.id = taskId;
         this.status = TaskStatus.NEW;
     }
 
@@ -34,6 +36,14 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setStatus(TaskStatus status) {

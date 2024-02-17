@@ -4,36 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Epic extends Task {
-    private HashMap<Integer, SubTask> subtasks;
+    private HashMap<Integer, TaskStatus> subtasks;
 
-    public Epic(String subject, String description, int epicId) {
-        super(subject, description, epicId);
-        this.id = epicId;
+    public Epic(String subject, String description) {
+        super(subject, description);
         this.subtasks = new HashMap<>();
-        status = TaskStatus.NEW;
-    }
-
-    private void calculateStatus() {
-        if (subtasks.isEmpty()) status = TaskStatus.NEW;
-        int numberOfNewStatuses = 0;
-        int numberOfDoneStatuses = 0;
-
-        for (SubTask subTask : subtasks.values()) {
-            if (subTask.getStatus().equals(TaskStatus.NEW)) numberOfNewStatuses++;
-            if (subTask.getStatus().equals(TaskStatus.DONE)) numberOfDoneStatuses++;
-        }
-
-        if (numberOfNewStatuses == subtasks.size()) {
-            super.status = TaskStatus.NEW;
-        } else if (numberOfDoneStatuses == subtasks.size()) {
-            super.status = TaskStatus.DONE;
-        } else {
-            super.status = TaskStatus.IN_PROGRESS;
-        }
-    }
-
-    public ArrayList<SubTask> getSubTasks() {
-        return new ArrayList<>(subtasks.values());
     }
 
     public ArrayList<Integer> getSubTasksIds() {
@@ -41,7 +16,7 @@ public class Epic extends Task {
     }
 
     public void addSubTask(SubTask subTask) {
-        subtasks.put(subTask.getId(), subTask);
+        subtasks.put(subTask.getId(), subTask.getStatus());
         calculateStatus();
     }
 
@@ -50,19 +25,44 @@ public class Epic extends Task {
         calculateStatus();
     }
 
+    public void removeAllSubTasks() {
+        subtasks.clear();
+        calculateStatus();
+    }
+
     public TaskStatus getStatus() {
         calculateStatus();
         return status;
     }
 
-
     @Override
     public String toString() {
         return "Epic{" +
-                "subtasks=" + subtasks +
+                "id=" + id +
+                ", subtasks=" + subtasks +
                 ", subject='" + subject + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + getStatus() +
                 '}';
     }
+
+    private void calculateStatus() {
+        if (subtasks.isEmpty()) status = TaskStatus.NEW;
+        int numberOfNewStatuses = 0;
+        int numberOfDoneStatuses = 0;
+
+        for (TaskStatus subTaskStatus : subtasks.values()) {
+            if (subTaskStatus.equals(TaskStatus.NEW)) numberOfNewStatuses++;
+            else if (subTaskStatus.equals(TaskStatus.DONE)) numberOfDoneStatuses++;
+            else {
+                super.status = TaskStatus.IN_PROGRESS;
+                return;
+            }
+        }
+
+        if (numberOfNewStatuses == subtasks.size()) super.status = TaskStatus.NEW;
+        else if (numberOfDoneStatuses == subtasks.size()) super.status = TaskStatus.DONE;
+
+    }
+
 }

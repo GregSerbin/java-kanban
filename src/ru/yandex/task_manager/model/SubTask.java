@@ -1,17 +1,11 @@
 package ru.yandex.task_manager.model;
 
 public class SubTask extends Task {
-
     private int epicId;
 
-    public SubTask(String subject, String description, TaskStatus status, int subTaskId, int epicId) {
-        super(subject, description, status, subTaskId);
+    public SubTask(String subject, String description, TaskStatus status, int epicId) {
+        super(subject, description, status);
         this.epicId = epicId;
-        this.id = subTaskId;
-    }
-
-    public void setStatus(TaskStatus status) {
-        super.status = status;
     }
 
     public int getEpicId() {
@@ -21,7 +15,8 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return "SubTask{" +
-                "subject='" + subject + '\'' +
+                "id=" + id +
+                ", subject='" + subject + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';

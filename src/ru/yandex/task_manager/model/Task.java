@@ -8,17 +8,15 @@ public class Task {
     protected TaskStatus status;
     protected int id;
 
-    public Task(String subject, String description, TaskStatus status, int taskId) {
+    public Task(String subject, String description, TaskStatus status) {
         this.subject = subject;
         this.description = description;
         this.status = status;
-        this.id = taskId;
     }
 
-    public Task(String subject, String description, int taskId) {
+    public Task(String subject, String description) {
         this.subject = subject;
         this.description = description;
-        this.id = taskId;
         this.status = TaskStatus.NEW;
     }
 
@@ -38,16 +36,20 @@ public class Task {
         return description;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
     public void setSubject(String subject) {
         this.subject = subject;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setStatus(TaskStatus status) {
-        this.status = status;
     }
 
     @Override
@@ -66,7 +68,8 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "subject='" + subject + '\'' +
+                "id=" + id +
+                ", subject='" + subject + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';

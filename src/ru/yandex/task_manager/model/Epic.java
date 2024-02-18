@@ -47,7 +47,10 @@ public class Epic extends Task {
     }
 
     private void calculateStatus() {
-        if (subtasks.isEmpty()) status = TaskStatus.NEW;
+        if (subtasks.isEmpty()) {
+            status = TaskStatus.NEW;
+            return;
+        }
         int numberOfNewStatuses = 0;
         int numberOfDoneStatuses = 0;
 
@@ -62,6 +65,7 @@ public class Epic extends Task {
 
         if (numberOfNewStatuses == subtasks.size()) super.status = TaskStatus.NEW;
         else if (numberOfDoneStatuses == subtasks.size()) super.status = TaskStatus.DONE;
+        else super.status = TaskStatus.IN_PROGRESS;
 
     }
 

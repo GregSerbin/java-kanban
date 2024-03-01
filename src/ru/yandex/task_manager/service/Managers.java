@@ -1,7 +1,14 @@
 package ru.yandex.task_manager.service;
 
 public class Managers {
+
+    private static InMemoryHistoryManager inMemoryHistoryManager;
+
+    private Managers() {
+    }
+
     public static HistoryManager getDefaultHistory() {
-        return new InMemoryHistoryManager();
+        if (inMemoryHistoryManager == null) inMemoryHistoryManager = new InMemoryHistoryManager();
+        return inMemoryHistoryManager;
     }
 }

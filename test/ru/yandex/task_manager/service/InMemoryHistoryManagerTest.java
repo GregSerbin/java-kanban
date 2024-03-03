@@ -45,7 +45,7 @@ class InMemoryHistoryManagerTest {
             inMemoryHistoryManager.add(task);
         }
 
-        assertTrue(inMemoryHistoryManager.getHistory().size() == 10, "Максимальный размер истории должен быть равен 10.");
+        assertEquals(10,inMemoryHistoryManager.getHistory().size(), "Максимальный размер истории должен быть равен 10.");
     }
 
 

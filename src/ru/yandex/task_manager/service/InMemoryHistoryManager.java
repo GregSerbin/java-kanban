@@ -9,7 +9,7 @@ import java.util.List;
 class InMemoryHistoryManager implements HistoryManager {
 
     private final int MAX_TASKS_IN_HISTORY = 10;
-    LinkedList<Task> history = new LinkedList<>();
+    private LinkedList<Task> history = new LinkedList<>();
 
     @Override
     public void add(Task task) {

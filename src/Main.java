@@ -2,13 +2,14 @@ import ru.yandex.task_manager.model.Epic;
 import ru.yandex.task_manager.model.SubTask;
 import ru.yandex.task_manager.model.Task;
 import ru.yandex.task_manager.model.TaskStatus;
-import ru.yandex.task_manager.service.InMemoryTaskManager;
+import ru.yandex.task_manager.service.Managers;
+import ru.yandex.task_manager.service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
 
         Task task1 = new Task("Тестовая задача № 1", "", TaskStatus.NEW);
         inMemoryTaskManager.addNewTask(task1);
@@ -91,7 +92,7 @@ public class Main {
         printTaskManagerEntities(inMemoryTaskManager);
     }
 
-    private static void printTaskManagerEntities(InMemoryTaskManager inMemoryTaskManager) {
+    private static void printTaskManagerEntities(TaskManager inMemoryTaskManager) {
         System.out.println(inMemoryTaskManager.getTasks());
         System.out.println(inMemoryTaskManager.getEpics());
         System.out.println(inMemoryTaskManager.getSubTasks());

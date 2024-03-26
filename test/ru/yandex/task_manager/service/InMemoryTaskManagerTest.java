@@ -7,6 +7,9 @@ import ru.yandex.task_manager.model.SubTask;
 import ru.yandex.task_manager.model.Task;
 import ru.yandex.task_manager.model.TaskStatus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -67,5 +70,97 @@ class InMemoryTaskManagerTest {
         assertEquals(epic, foundEpic, "Эпики должны совпадать.");
     }
 
+    @Test
+    public void taskShouldBeRemovedFromInMemoryTaskManagerAndFromInMemoryHistoryManager() {
+        Task newTask = new Task("Task subject", "Task description", TaskStatus.IN_PROGRESS);
+        inMemoryTaskManager.addNewTask(newTask);
+        inMemoryTaskManager.getTaskById(newTask.getId());
+        inMemoryTaskManager.removeTaskById(newTask.getId());
 
+        for (Task task : inMemoryTaskManager.getTasks()) {
+            assertNotEquals(newTask.getId(), task.getId());
+        }
+
+        for (Task task : inMemoryTaskManager.getHistory()) {
+            assertNotEquals(newTask.getId(), task.getId());
+        }
+    }
+
+    @Test
+    public void epicWithSubTasksShouldBeRemovedFromInMemoryTaskManagerAndFromInMemoryHistoryManager() {
+        Epic newEpic = new Epic("Epic subject", "Epic description");
+        inMemoryTaskManager.addNewEpic(newEpic);
+        SubTask newSubTask = new SubTask("Subtask subject", "Subtask description", TaskStatus.IN_PROGRESS, newEpic.getId());
+        inMemoryTaskManager.addNewSubTask(newSubTask);
+        inMemoryTaskManager.getEpicById(newEpic.getId());
+        inMemoryTaskManager.getSubTaskById(newSubTask.getId());
+
+        inMemoryTaskManager.removeEpicById(newEpic.getId());
+
+        for (Epic epic : inMemoryTaskManager.getEpics()) {
+            assertNotEquals(newEpic.getId(), epic.getId());
+        }
+        for (SubTask subTask : inMemoryTaskManager.getSubTasks()) {
+            assertNotEquals(newSubTask.getId(), subTask.getId());
+        }
+
+        for (Task task : inMemoryTaskManager.getHistory()) {
+            assertNotEquals(newEpic.getId(), task.getId());
+            assertNotEquals(newSubTask.getId(), task.getId());
+        }
+    }
+
+    @Test
+    public void subTasksShouldBeRemovedFromInMemoryTaskManagerAndFromInMemoryHistoryManager() {
+        Epic newEpic = new Epic("Epic subject", "Epic description");
+        inMemoryTaskManager.addNewEpic(newEpic);
+        SubTask newSubTask = new SubTask("Subtask subject", "Subtask description", TaskStatus.IN_PROGRESS, newEpic.getId());
+        inMemoryTaskManager.addNewSubTask(newSubTask);
+        inMemoryTaskManager.getSubTaskById(newSubTask.getId());
+
+        inMemoryTaskManager.removeSubTaskById(newSubTask.getId());
+
+        for (SubTask subTask : inMemoryTaskManager.getSubTasks()) {
+            assertNotEquals(newSubTask.getId(), subTask.getId());
+        }
+
+        for (Task task : inMemoryTaskManager.getHistory()) {
+            assertNotEquals(newSubTask.getId(), task.getId());
+        }
+    }
+
+    @Test
+    public void tasksShouldBeRemovedFromInMemoryTaskManagerAndFromInMemoryHistoryManager() {
+        ArrayList<Task> originalTasks = new ArrayList<>();
+        for (int i = 0; i < 2; i++) { // создаем 2 задачи для теста
+            Task task = new Task("Заголовок задачи № " + i, "Описание задачи № " + i, TaskStatus.NEW);
+            inMemoryTaskManager.addNewTask(task);
+            inMemoryTaskManager.getTaskById(task.getId());
+            originalTasks.add(task);
+        }
+
+        inMemoryTaskManager.removeTasks();
+        List<Task> tasksFromHistoryManager = inMemoryTaskManager.getHistory();
+
+        assertEquals(0, inMemoryTaskManager.getTasks().size(), "Все таски должны быть удалены из менеджера задач");
+        assertFalse(tasksFromHistoryManager.containsAll(originalTasks), "Все таски должны быть удалены из истории просмотра задач");
+    }
+
+    @Test
+    public void epicsAndSubTasksShouldBeRemovedFromInMemoryTaskManagerAndFromInMemoryHistoryManager() {
+        Epic newEpic = new Epic("Epic subject", "Epic description");
+        inMemoryTaskManager.addNewEpic(newEpic);
+        inMemoryTaskManager.getEpicById(newEpic.getId());
+        SubTask newSubTask = new SubTask("Subtask subject", "Subtask description", TaskStatus.IN_PROGRESS, newEpic.getId());
+        inMemoryTaskManager.addNewSubTask(newSubTask);
+        inMemoryTaskManager.getSubTaskById(newSubTask.getId());
+
+        inMemoryTaskManager.removeEpics();
+        List<Task> tasksFromHistoryManager = inMemoryTaskManager.getHistory();
+
+        assertEquals(0, inMemoryTaskManager.getEpics().size(), "Все эпики должны быть удалены из менеджера задач");
+        assertEquals(0, inMemoryTaskManager.getSubTasks().size(), "Все сабтаски должны быть удалены из менеджера задач");
+        assertFalse(tasksFromHistoryManager.contains(newSubTask), "Все сабтаски должны быть удалены из истории просмотра задач");
+        assertFalse(tasksFromHistoryManager.contains(newEpic), "Все эпики должны быть удалены из истории просмотра задач");
+    }
 }

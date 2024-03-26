@@ -62,4 +62,16 @@ class InMemoryHistoryManagerTest {
 
 
     }
+
+    @Test
+    public void taskShouldBeRemovedFromHistoryById() {
+        Task task = new Task("Task subject", "Task description");
+        int taskId = 0;
+        task.setId(taskId);
+
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.remove(taskId);
+
+        assertEquals(0, inMemoryHistoryManager.getHistory().size(), "Такс должен корректно удаляться из истории.");
+    }
 }

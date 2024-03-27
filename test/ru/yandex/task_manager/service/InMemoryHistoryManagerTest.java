@@ -38,15 +38,40 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void maxHistorySizeShouldBe10() {
-        int numberOfTasksMoreThan10 = 20;
-        for (int i = 0; i < numberOfTasksMoreThan10; i++) {
+    public void historyShouldStoreOnlyLastAccessToTask() {
+        ArrayList<Task> originalTasks = new ArrayList<>();
+        for (int i = 0; i < 3; i++) { // создаем 2 задачи для теста
             Task task = new Task("Заголовок задачи № " + i, "Описание задачи № " + i, TaskStatus.NEW);
+            task.setId(i);
+            originalTasks.add(task);
+
             inMemoryHistoryManager.add(task);
         }
 
-        assertEquals(10,inMemoryHistoryManager.getHistory().size(), "Максимальный размер истории должен быть равен 10.");
+        // Добавляем в историю просмотров те же таски, но в обратном порядке
+        for (int i = originalTasks.size() - 1; i >= 0; i--) {
+            inMemoryHistoryManager.add(originalTasks.get(i));
+        }
+
+        List<Task> tasksFromHistoryManager = inMemoryHistoryManager.getHistory();
+        // В истории должно остаться то же количество тасок в порядке последнего добавления
+        assertEquals(originalTasks.size(), tasksFromHistoryManager.size(), "Количество задач в истории должно быть таким же как количество добавленных тасок.");
+        for (int i = 0; i < originalTasks.size(); i++) {
+            assertEquals(originalTasks.get(i).getId(), tasksFromHistoryManager.get(tasksFromHistoryManager.size() - 1 - i).getId(), "Новые задачи в истории должны добавляться в конец.");
+        }
+
+
     }
 
+    @Test
+    public void taskShouldBeRemovedFromHistoryById() {
+        Task task = new Task("Task subject", "Task description");
+        int taskId = 0;
+        task.setId(taskId);
 
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.remove(taskId);
+
+        assertEquals(0, inMemoryHistoryManager.getHistory().size(), "Такс должен корректно удаляться из истории.");
+    }
 }
